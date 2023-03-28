@@ -1,10 +1,9 @@
 package com.folksdevbank.folksdevbank;
 
-import com.folksdevbank.folksdevbank.model.Account;
-import com.folksdevbank.folksdevbank.model.City;
+import com.folksdevbank.folksdevbank.model.*;
 import com.folksdevbank.folksdevbank.model.Currency;
-import com.folksdevbank.folksdevbank.model.Customer;
 import com.folksdevbank.folksdevbank.repository.AccountRepository;
+import com.folksdevbank.folksdevbank.repository.AddressRepository;
 import com.folksdevbank.folksdevbank.repository.CustomerRepository;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.boot.CommandLineRunner;
@@ -12,7 +11,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @SpringBootApplication
 @EnableRabbit
@@ -20,10 +20,12 @@ public class FolksdevbankApplication implements CommandLineRunner {
 
 	private final AccountRepository accountRepository;
 	private final CustomerRepository customerRepository;
+	private final AddressRepository addressRepository;
 
-	public FolksdevbankApplication(AccountRepository accountRepository, CustomerRepository customerRepository) {
+	public FolksdevbankApplication(AccountRepository accountRepository, CustomerRepository customerRepository, AddressRepository addressRepository) {
 		this.accountRepository = accountRepository;
 		this.customerRepository = customerRepository;
+		this.addressRepository = addressRepository;
 	}
 
 
@@ -33,32 +35,61 @@ public class FolksdevbankApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
+
 		Customer c1= Customer.builder()
-				.id("12345")
 				.city(City.ISTANBUL)
 				.name("Emre Kırgız")
 				.dateOfBirth(2005)
-				.address("Ev").build();
+				.build();
 		Customer c2= Customer.builder()
-				.id("12346")
 				.city(City.ANKARA)
 				.name("Ali Kırgız")
 				.dateOfBirth(1995)
-				.address("Ev").build();
+				.build();
 		Customer c3= Customer.builder()
-				.id("12347")
 				.city(City.CANKIRI)
 				.name("Ayse Kırgız")
 				.dateOfBirth(2005)
-				.address("İs").build();
+				.build();
 		Customer c4= Customer.builder()
-				.id("123478")
 				.city(City.CANKIRI)
 				.name("Fatma Kırgız")
 				.dateOfBirth(2002)
-				.address("Depo").build();
+				.build();
 
 		customerRepository.saveAll(Arrays.asList(c1,c2,c3,c4));
+
+		List<Address> addressList = new ArrayList<>();
+		addressList.add(Address.builder()
+				.postCode("34156")
+				.customer(c1)
+				.city(City.CANKIRI)
+				.addressDetails("Ev Adresi")
+				.build());
+
+		addressList.add(Address.builder()
+				.postCode("34155")
+				.customer(c1)
+				.city(City.KOCAELI)
+				.addressDetails("İs Adresi")
+				.build());
+
+		c1.setAddress(addressList);
+		customerRepository.save(c1);
+
+
+		Address address1 = Address.builder()
+				.postCode("181716")
+				.customer(c2)
+				.city(City.IZMIR)
+				.addressDetails("Depo Adresi")
+				.build();
+
+		c2.setAddress(Arrays.asList(address1));
+		customerRepository.save(c2);
+
+
+
 
 		Account a1= Account.builder()
 				.id("100")

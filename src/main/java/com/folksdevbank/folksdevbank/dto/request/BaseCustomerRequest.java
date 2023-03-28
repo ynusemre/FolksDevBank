@@ -1,12 +1,16 @@
 package com.folksdevbank.folksdevbank.dto.request;
 
 import com.folksdevbank.folksdevbank.dto.CityDto;
+import com.folksdevbank.folksdevbank.model.Address;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -24,7 +28,7 @@ public class BaseCustomerRequest {
     @NotNull(message = "City must not be null")
     private CityDto city;
 
-    @NotNull(message = "City must not be null")
-    private String address;
+    @NotNull(message = "Address must not be null")
+    private List<Address> address;
 
 }

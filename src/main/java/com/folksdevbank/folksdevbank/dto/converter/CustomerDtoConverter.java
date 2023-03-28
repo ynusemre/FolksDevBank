@@ -5,6 +5,8 @@ import com.folksdevbank.folksdevbank.dto.CustomerDto;
 import com.folksdevbank.folksdevbank.model.Customer;
 import org.springframework.stereotype.Component;
 
+import java.util.stream.Collectors;
+
 @Component
 public class CustomerDtoConverter {
 

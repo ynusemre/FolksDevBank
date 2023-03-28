@@ -4,10 +4,7 @@ import com.folksdevbank.folksdevbank.dto.AccountDto;
 import com.folksdevbank.folksdevbank.dto.converter.AccountDtoConverter;
 import com.folksdevbank.folksdevbank.dto.request.CreateAccountRequest;
 import com.folksdevbank.folksdevbank.exception.CustomerNotFoundException;
-import com.folksdevbank.folksdevbank.model.Account;
-import com.folksdevbank.folksdevbank.model.City;
-import com.folksdevbank.folksdevbank.model.Currency;
-import com.folksdevbank.folksdevbank.model.Customer;
+import com.folksdevbank.folksdevbank.model.*;
 import com.folksdevbank.folksdevbank.repository.AccountRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +12,7 @@ import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.DirectExchange;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -47,7 +45,10 @@ class AccountServiceTest {
                                 .id("12345")
                                 .city(City.ISTANBUL)
                                 .name("Emre Kaya")
+<<<<<<< HEAD
                                 .address("Ev Adresi")
+=======
+>>>>>>> f4cf932 (second commit : Mysql Added)
                                 .dateOfBirth(1995).build();
 
         Account account = Account.builder()

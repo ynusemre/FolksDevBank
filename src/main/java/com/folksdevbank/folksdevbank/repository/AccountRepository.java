@@ -3,5 +3,14 @@ package com.folksdevbank.folksdevbank.repository;
 import com.folksdevbank.folksdevbank.model.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.math.BigDecimal;
+import java.util.Currency;
+import java.util.List;
+
 public interface AccountRepository extends JpaRepository<Account,String> {
+
+    List<Account> findAllByBalanceGreaterThan(BigDecimal balance);
+
+
+
 }
