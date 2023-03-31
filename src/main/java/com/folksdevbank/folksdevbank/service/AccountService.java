@@ -17,6 +17,7 @@ import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -32,6 +33,8 @@ public class  AccountService {
     private final AccountDtoConverter converter;
     private static final Logger logger= LoggerFactory.getLogger(AccountService.class);
     private final AmqpTemplate rabbitTemplate;
+
+    private final KafkaTemplate<String,String> kafkaTemplate;
     private final DirectExchange exchange;
 
     @Value("${sample.rabbitmq.routingKey}")
@@ -40,11 +43,12 @@ public class  AccountService {
     String queueName;
 
 
-    public AccountService(AccountRepository accountRepository, CustomerService customerService, AccountDtoConverter converter, AmqpTemplate rabbitTemplate, DirectExchange exchange) {
+    public AccountService(AccountRepository accountRepository, CustomerService customerService, AccountDtoConverter converter, AmqpTemplate rabbitTemplate, KafkaTemplate<String, String> kafkaTemplate, DirectExchange exchange) {
         this.accountRepository = accountRepository;
         this.customerService = customerService;
         this.converter = converter;
         this.rabbitTemplate = rabbitTemplate;
+        this.kafkaTemplate = kafkaTemplate;
         this.exchange = exchange;
     }
 
@@ -161,13 +165,21 @@ public class  AccountService {
     public void finalizeTransfer(MoneyTransferRequest transferRequest){
         Optional<Account> senderAccountOptional = accountRepository.findById(transferRequest.getFromId());
         senderAccountOptional.ifPresentOrElse(sender -> {
-            System.out.println("Sender("+sender.getId()+") new account balance: "+ sender.getBalance()); },
+            String notificationMessage = "Dear customer %s \n Your money transfer request has been succeed. Your new balance is %s";
+            System.out.println("Sender("+sender.getId()+") new account balance: "+ sender.getBalance());
+            String senderMessage = String.format(notificationMessage,sender.getId(),sender.getBalance());
+            kafkaTemplate.send("transfer-notification",senderMessage);
+            },
                 ()-> System.out.println("Account not found")
         );
 
         Optional<Account> receiverAccountOptional=accountRepository.findById(transferRequest.getToId());
         receiverAccountOptional.ifPresentOrElse(receiver -> {
-            System.out.println("Receiver("+receiver.getId()+") new account balance: "+receiver.getBalance());},
+            String notificationMessage = "Dear customer %s \n You received a money transfer from %s. Your new balance is %s";
+            System.out.println("Receiver("+receiver.getId()+") new account balance: "+receiver.getBalance());
+            String receiverMessage = String.format(notificationMessage,receiver.getId(),transferRequest.getFromId(),receiver.getBalance());
+            kafkaTemplate.send("transfer-notification",receiverMessage);
+            },
                 () -> System.out.println("Account not found")
         );
     }

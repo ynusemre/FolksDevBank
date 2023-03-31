@@ -29,12 +29,12 @@ public class Customer {
     private Integer dateOfBirth;
     private City city;
 
-    //@OneToOne(cascade = CascadeType.ALL)
-    //@JoinColumn(name = "address_id",referencedColumnName = "id")
-    //private Address address;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id",referencedColumnName = "id")
+    private Address address;
 
 
-    @OneToMany(mappedBy = "customer",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    private List<Address> address;
+    //@OneToMany(mappedBy = "customer",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    //private List<Address> address;
 
 }

@@ -4,4 +4,6 @@ public enum CityDto {
 
     ISTANBUL,ANKARA,IZMIR,MANISA,MARAS,KOCAELI,CANKIRI
 
+
+
 }

@@ -27,9 +27,11 @@ public class Address {
     private String postCode;
     private String addressDetails;
 
+    /*
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinColumn(name = "customer_id",referencedColumnName = "id")
     private Customer customer;
+    */
 
 
 }
