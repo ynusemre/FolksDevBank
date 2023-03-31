@@ -29,6 +29,6 @@ public class BaseCustomerRequest {
     private CityDto city;
 
     @NotNull(message = "Address must not be null")
-    private List<Address> address;
+    private Address address;
 
 }

@@ -10,9 +10,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.DirectExchange;
+import org.springframework.kafka.core.KafkaTemplate;
 
 import java.math.BigDecimal;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -23,6 +23,9 @@ class AccountServiceTest {
     private AccountDtoConverter converter;
     private AccountService service;
     private AmqpTemplate rabbitTemplate;
+
+    private KafkaTemplate<String,String> kafkaTemplate;
+
     private DirectExchange exchange;
     @BeforeEach
     public void setUp(){
@@ -30,7 +33,7 @@ class AccountServiceTest {
         customerService=mock(CustomerService.class);
         converter=mock(AccountDtoConverter.class);
 
-        service=new AccountService(accountRepository,customerService,converter, rabbitTemplate, exchange);
+        service=new AccountService(accountRepository,customerService,converter, rabbitTemplate, kafkaTemplate, exchange);
     }
 
     @Test
@@ -45,10 +48,7 @@ class AccountServiceTest {
                                 .id("12345")
                                 .city(City.ISTANBUL)
                                 .name("Emre Kaya")
-<<<<<<< HEAD
-                                .address("Ev Adresi")
-=======
->>>>>>> f4cf932 (second commit : Mysql Added)
+                                .address(Address.builder().city(City.MANISA).postCode("456312").addressDetails("İs Adresi").build())
                                 .dateOfBirth(1995).build();
 
         Account account = Account.builder()
