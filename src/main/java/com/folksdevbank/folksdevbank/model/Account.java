@@ -24,6 +24,8 @@ public class Account {
     @Column(name="id",updatable = false,nullable = false)
     private String id;
     private String customerId;
+
+
     private BigDecimal balance;
     private City city;
     private Currency currency;
